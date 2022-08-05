@@ -1,0 +1,46 @@
+<!doctype html>
+<head><title>3D WebGL Trees</title>
+  <style>
+    body,html {
+      font-size:15pt; line-height:1.6; background:#000;
+      color:#000; margin:0px;}
+    h1,h2,h3 { color:#eee; font-weight:500;}
+  </style>
+</head>
+  <style> #main { position:absolute; top:0px; left:0px; } body,html { padding:0px; height:100%; max-width:100%; } </style>
+
+<canvas id=main> </canvas>
+
+<script id=fshader type='text/glsl-fragment'>
+ precision highp float;
+ varying highp vec3 vpos;
+ varying highp vec2 vuv;
+ void main() {
+     float v = vuv.x / 10.0;
+     float h = vuv.y / 2.0 + 0.5;
+     float b = 1.0 - v * 0.7;
+     gl_FragColor = vec4(vec3(h * 0.2, h * b, b * 0.3), 10); //control color range with b * (value)
+ }
+</script>
+  <script id=vshader type='text/glsl-vertex'>
+ uniform float t;
+ attribute vec3 pos;
+ varying highp vec3 vpos;
+ attribute vec2 uv;
+ varying highp vec2 vuv;
+ void main() {
+     vpos = pos;
+     vuv = uv;
+     vec3 p = pos - vec3(0, 0.99, 0);
+     float t1 = t / 10000.0;
+     p.x = sin(t1) * pos.x + cos(t1) * pos.z;
+     p.z = cos(t1) * pos.x - sin(t1) * pos.z;
+     p.z = 0.1 * p.z;
+     gl_Position = vec4(p.xyz, 1); //change closeness of scene, less is closer, more is farther
+ }
+</script>
+  <h3>3D Fractal Forest</h3>
+  <script src="tree.js"> </script>
+
+
+
